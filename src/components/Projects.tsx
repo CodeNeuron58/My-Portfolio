@@ -1,8 +1,17 @@
-import { ExternalLink, Github, ArrowUpRight, BookOpen } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ExternalLink, GitGraph, ArrowUpRight } from 'lucide-react';
 
 const Projects = () => {
   const projects = [
+    {
+      id: 'video-rag-analyst',
+      title: 'Video-RAG-Analyst',
+      description:
+        'A production-grade RAG pipeline that transforms unstructured YouTube video content into a queryable knowledge base using LangChain, FAISS, and Cohere LLM.',
+      tech: ['Python', 'LangChain', 'Cohere', 'FAISS', 'Streamlit'],
+      github: 'https://github.com/CodeNeuron58/Video-RAG-Analyst',
+      demo: 'https://vidbrief-ai.streamlit.app',
+      gradient: 'from-orange-500 to-rose-600',
+    },
     {
       id: 'student-performance',
       title: 'Student Performance Predictor',
@@ -115,7 +124,7 @@ const Projects = () => {
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium"
                   >
-                    <Github size={18} />
+                    <GitGraph size={18} />
                   </a>
                   {project.demo && (
                     <a
@@ -128,15 +137,7 @@ const Projects = () => {
                     </a>
                   )}
 
-                  {project.id && (
-                    <Link
-                      to={`/project/${project.id}`}
-                      className="ml-auto flex items-center gap-2 text-sky-400 hover:text-sky-300 transition-colors text-sm font-bold"
-                    >
-                      <BookOpen size={16} />
-                      <span>Case Study</span>
-                    </Link>
-                  )}
+
                 </div>
               </div>
             </div>
