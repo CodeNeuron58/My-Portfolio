@@ -1,4 +1,5 @@
-import { ChevronDown, Github, Linkedin, Mail } from 'lucide-react';
+import { ChevronDown, GitGraph, Linkedin, Mail } from 'lucide-react';
+import { SOCIAL_LINKS } from '../constants';
 
 const Hero = () => {
   const scrollToSection = (sectionId: string) => {
@@ -65,16 +66,16 @@ const Hero = () => {
           {/* Socials */}
           <div className="flex items-center justify-center gap-6 animate-fade-in-up delay-700">
             <a
-              href="https://github.com"
+              href={SOCIAL_LINKS.github}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub Profile"
               className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
             >
-              <Github size={24} />
+              <GitGraph size={24} />
             </a>
             <a
-              href="https://linkedin.com"
+              href={SOCIAL_LINKS.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn Profile"
@@ -83,7 +84,7 @@ const Hero = () => {
               <Linkedin size={24} />
             </a>
             <a
-              href="mailto:your.email@example.com"
+              href={`mailto:${SOCIAL_LINKS.email}`}
               aria-label="Email Me"
               className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-full transition-all"
             >

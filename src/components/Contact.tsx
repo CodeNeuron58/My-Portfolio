@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Mail, Linkedin, Github, FileCode, Send } from 'lucide-react';
+import { Mail, Linkedin, GitGraph, Send } from 'lucide-react';
+import { SOCIAL_LINKS } from '../constants';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -37,26 +38,20 @@ const Contact = () => {
     {
       name: 'Email',
       icon: Mail,
-      url: 'mailto:your.email@example.com',
+      url: `mailto:${SOCIAL_LINKS.email}`,
       color: 'hover:text-sky-400',
     },
     {
       name: 'LinkedIn',
       icon: Linkedin,
-      url: 'https://linkedin.com/in/yourprofile',
+      url: SOCIAL_LINKS.linkedin,
       color: 'hover:text-blue-400',
     },
     {
       name: 'GitHub',
-      icon: Github,
-      url: 'https://github.com/yourusername',
+      icon: GitGraph,
+      url: SOCIAL_LINKS.github,
       color: 'hover:text-slate-200',
-    },
-    {
-      name: 'Kaggle',
-      icon: FileCode,
-      url: 'https://kaggle.com/yourusername',
-      color: 'hover:text-purple-400',
     },
   ];
 

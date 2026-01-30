@@ -1,4 +1,5 @@
-import { Heart, Github, Linkedin, Mail, FileCode } from 'lucide-react';
+import { Heart, GitGraph, Linkedin, Mail } from 'lucide-react';
+import { SOCIAL_LINKS } from '../constants';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -56,10 +57,9 @@ const Footer = () => {
             <h4 className="text-slate-50 font-semibold mb-6">Connect</h4>
             <div className="flex gap-4">
               {[
-                { icon: Github, href: 'https://github.com' },
-                { icon: Linkedin, href: 'https://linkedin.com' },
-                { icon: Mail, href: 'mailto:your.email@example.com' },
-                { icon: FileCode, href: 'https://kaggle.com' },
+                { icon: GitGraph, href: SOCIAL_LINKS.github },
+                { icon: Linkedin, href: SOCIAL_LINKS.linkedin },
+                { icon: Mail, href: `mailto:${SOCIAL_LINKS.email}` },
               ].map((social, index) => (
                 <a
                   key={index}
