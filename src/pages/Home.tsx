@@ -10,6 +10,7 @@ import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 
 import Navigation from '../components/Navigation';
+import SEO from '../components/SEO';
 
 const Home = () => {
     const location = useLocation();
@@ -28,6 +29,7 @@ const Home = () => {
 
     return (
         <>
+            <SEO />
             <Navigation />
             <Hero />
             <About />

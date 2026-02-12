@@ -1,4 +1,56 @@
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Brain, Code, Sparkles, Target } from 'lucide-react';
+import React, { useRef } from 'react';
+
+const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+
+    const rect = ref.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateY,
+        rotateX,
+        transformStyle: "preserve-3d",
+      }}
+      className={className}
+    >
+      <div style={{ transform: "translateZ(50px)" }}>{children}</div>
+    </motion.div>
+  );
+};
 
 const About = () => {
   const passionAreas = [
@@ -25,21 +77,33 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-slate-950 border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate-fade-in-up">
-          <h2 className="text-4xl font-bold text-slate-50 mb-4">
+    <section id="about" className="py-20 bg-slate-950 border-t border-white/5 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
             About <span className="text-sky-400">Me</span>
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-sky-400 to-purple-500 mx-auto mb-6 rounded-full"></div>
-        </div>
+          <div className="w-24 h-1 bg-gradient-to-r from-sky-400 to-purple-500 mx-auto mb-6 rounded-full" />
+        </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Bio Side */}
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-purple-500/20 blur-xl opacity-50 group-hover:opacity-75 transition-opacity rounded-2xl"></div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="group relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-sky-500/20 to-purple-500/20 blur-xl opacity-50 group-hover:opacity-75 transition-opacity rounded-2xl" />
             <div className="relative bg-slate-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-8 hover:border-white/10 transition-colors">
-              <h3 className="text-2xl font-bold text-slate-50 mb-6">
+              <h3 className="text-2xl font-bold text-white mb-6">
                 Hello, I'm an AI Enthusiast
               </h3>
               <div className="space-y-4 text-slate-400 leading-relaxed">
@@ -65,33 +129,44 @@ const About = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Interests Side */}
-          <div>
-            <h3 className="text-xl font-bold text-slate-50 mb-6 pl-2 border-l-4 border-sky-400">
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <h3 className="text-xl font-bold text-white mb-6 pl-2 border-l-4 border-sky-400">
               Areas of Passion
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {passionAreas.map((area, index) => {
                 const Icon = area.icon;
                 return (
-                  <div
+                  <motion.div
                     key={index}
-                    className="group bg-slate-900/50 border border-white/5 rounded-2xl p-6 hover:border-sky-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-500/10"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    className="perspective-1000"
                   >
-                    <div className="w-12 h-12 bg-sky-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-sky-500/20 transition-colors">
-                      <Icon className="text-sky-400" size={24} />
-                    </div>
-                    <h4 className="text-slate-50 font-semibold mb-2 group-hover:text-sky-400 transition-colors">
-                      {area.title}
-                    </h4>
-                    <p className="text-slate-500 text-sm leading-relaxed">{area.description}</p>
-                  </div>
+                    <TiltCard className="h-full bg-slate-900/50 border border-white/5 rounded-2xl p-6 hover:border-sky-500/30 transition-colors">
+                      <div className="w-12 h-12 bg-sky-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-sky-500/20 transition-colors">
+                        <Icon className="text-sky-400" size={24} />
+                      </div>
+                      <h4 className="text-white font-semibold mb-2 group-hover:text-sky-400 transition-colors">
+                        {area.title}
+                      </h4>
+                      <p className="text-slate-500 text-sm leading-relaxed">{area.description}</p>
+                    </TiltCard>
+                  </motion.div>
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

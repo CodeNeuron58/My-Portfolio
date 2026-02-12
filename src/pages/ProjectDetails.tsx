@@ -2,10 +2,13 @@ import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Github, ExternalLink, Calendar, Tag, Layers, BarChart, ChevronRight } from 'lucide-react';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
+
+import { ProjectDetail, Metric } from '../types';
 
 // This would typically come from a data file or API
 // For now, we'll mock it to demonstrate the template
-const projectsData: Record<string, any> = {
+const projectsData: Record<string, ProjectDetail> = {
     'student-performance': {
         title: 'Student Performance Predictor',
         subtitle: 'End-to-End Machine Learning Pipeline',
@@ -53,6 +56,11 @@ const ProjectDetails = () => {
 
     return (
         <div className="bg-slate-950 min-h-screen">
+            <SEO
+                title={project.title}
+                description={project.description}
+                image={project.image} // Assuming project has an image field, otherwise fallback
+            />
             {/* Navigation */}
             <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -109,7 +117,7 @@ const ProjectDetails = () => {
 
                 {/* Metrics Grid */}
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 animate-fade-in-up delay-100">
-                    {project.metrics.map((metric: any, idx: number) => (
+                    {project.metrics.map((metric: Metric, idx: number) => (
                         <div key={idx} className="bg-slate-900/50 border border-white/5 p-6 rounded-2xl relative overflow-hidden group hover:border-sky-500/20 transition-colors">
                             <div className="absolute inset-0 bg-gradient-to-br from-sky-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             <p className="text-slate-500 text-sm font-medium uppercase tracking-wider mb-2">{metric.label}</p>

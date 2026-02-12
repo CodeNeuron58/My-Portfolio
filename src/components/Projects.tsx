@@ -1,148 +1,147 @@
-import { ExternalLink, GitGraph, ArrowUpRight } from 'lucide-react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { ExternalLink, Github } from 'lucide-react';
+import React, { useRef } from 'react';
+import { PROJECTS } from '../constants';
 
-const Projects = () => {
-  const projects = [
-    {
-      id: 'video-rag-analyst',
-      title: 'Video-RAG-Analyst',
-      description:
-        'A production-grade RAG pipeline that transforms unstructured YouTube video content into a queryable knowledge base using LangChain, FAISS, and Cohere LLM.',
-      tech: ['Python', 'LangChain', 'Cohere', 'FAISS', 'Streamlit'],
-      github: 'https://github.com/CodeNeuron58/Video-RAG-Analyst',
-      demo: 'https://vidbrief-ai.streamlit.app',
-      gradient: 'from-orange-500 to-rose-600',
-    },
-    {
-      id: 'student-performance',
-      title: 'Student Performance Predictor',
-      description:
-        'Machine learning model that predicts student academic performance based on various factors using regression and classification algorithms.',
-      tech: ['Python', 'Scikit-learn', 'Pandas', 'Flask'],
-      github: 'https://github.com',
-      demo: 'https://demo.com',
-      gradient: 'from-sky-400 to-blue-600',
-    },
-    {
-      title: 'Sentiment Analysis Engine',
-      description:
-        'NLP-powered application that analyzes sentiment in social media posts and reviews using transformer models and BERT architecture.',
-      tech: ['Python', 'Hugging Face', 'PyTorch', 'Streamlit'],
-      github: 'https://github.com',
-      demo: 'https://demo.com',
-      gradient: 'from-purple-500 to-sky-500',
-    },
-    {
-      title: 'Image Classification System',
-      description:
-        'Deep learning computer vision model that classifies images across multiple categories with high accuracy using CNNs.',
-      tech: ['Python', 'TensorFlow', 'Keras', 'OpenCV'],
-      github: 'https://github.com',
-      demo: 'https://demo.com',
-      gradient: 'from-emerald-400 to-sky-500',
-    },
-    {
-      title: 'AI Chatbot Assistant',
-      description:
-        'Conversational AI system using GPT architecture for intelligent dialogue and task assistance with context awareness.',
-      tech: ['Python', 'OpenAI API', 'LangChain', 'React'],
-      github: 'https://github.com',
-      demo: 'https://demo.com',
-      gradient: 'from-blue-500 to-purple-500',
-    },
-    {
-      title: 'Recommendation System',
-      description:
-        'Collaborative filtering and content-based recommendation engine for personalized user experiences.',
-      tech: ['Python', 'Scikit-learn', 'Surprise', 'FastAPI'],
-      github: 'https://github.com',
-      demo: null,
-      gradient: 'from-pink-500 to-purple-500',
-    },
-    {
-      title: 'Time Series Forecasting',
-      description:
-        'LSTM-based neural network for predicting time series data with applications in stock market and weather forecasting.',
-      tech: ['Python', 'PyTorch', 'Pandas', 'Matplotlib'],
-      github: 'https://github.com',
-      demo: null,
-      gradient: 'from-indigo-500 to-sky-500',
-    },
-  ];
+const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+
+    const rect = ref.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
   return (
-    <section id="projects" className="py-20 bg-slate-950 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16 animate-fade-in-up">
-          <h2 className="text-4xl font-bold text-slate-50 mb-4">
-            Featured <span className="text-sky-400">Projects</span>
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-sky-400 to-purple-500 mx-auto mb-6 rounded-full"></div>
-          <p className="text-slate-400 max-w-2xl mx-auto text-lg font-light">
-            Showcasing practical AI/ML applications and innovative solutions.
-          </p>
-        </div>
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateY,
+        rotateX,
+        transformStyle: "preserve-3d",
+      }}
+      className={className}
+    >
+      <div style={{ transform: "translateZ(75px)" }}>{children}</div>
+    </motion.div>
+  );
+};
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <div
-              key={index}
-              className="group relative bg-slate-900/50 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden hover:border-sky-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_-10px_rgba(56,189,248,0.2)] flex flex-col"
-            >
-              <div className={`h-1.5 w-full bg-gradient-to-r ${project.gradient} opacity-80 group-hover:opacity-100 transition-opacity`}></div>
+const Projects = () => {
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
 
-              <div className="p-8 flex flex-col flex-grow">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-bold text-slate-50 group-hover:text-sky-400 transition-colors">
+  const item = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0 }
+  };
+
+  return (
+    <section id="projects" className="py-20 bg-slate-950">
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Featured Projects</h2>
+          <div className="w-20 h-1 bg-sky-500 mx-auto rounded-full" />
+        </motion.div>
+
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {PROJECTS.map((project, index) => (
+            <motion.div key={index} variants={item} className="perspective-1000">
+              <TiltCard className="bg-slate-900 rounded-xl overflow-hidden border border-slate-800 hover:border-sky-500/50 transition-colors group h-full">
+                <div className="relative overflow-hidden h-48">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent z-10 opacity-60" />
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-4 right-4 z-20 flex gap-2">
+                    <motion.a
+                      href={project.github}
+                      whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
+                      className="p-2 bg-black/50 backdrop-blur-sm rounded-full text-white/70 hover:text-white transition-colors"
+                    >
+                      <Github className="w-4 h-4" />
+                    </motion.a>
+                    {project.live && (
+                      <motion.a
+                        href={project.live}
+                        whileHover={{ scale: 1.1, backgroundColor: "rgba(255,255,255,0.2)" }}
+                        className="p-2 bg-sky-500/80 backdrop-blur-sm rounded-full text-white hover:text-white hover:bg-sky-500 transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </motion.a>
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-6 relative z-0 bg-slate-900 h-full flex flex-col">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-sky-400 transition-colors">
                     {project.title}
                   </h3>
-                  {project.demo && (
-                    <a href={project.demo} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-sky-400 transition-colors">
-                      <ArrowUpRight size={20} />
-                    </a>
-                  )}
+                  <p className="text-slate-400 mb-4 text-sm leading-relaxed flex-grow">
+                    {project.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-auto">
+                    {project.tech.map((tech, i) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 text-xs font-medium rounded-md bg-slate-800 text-slate-300 border border-slate-700/50"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-
-                <p className="text-slate-400 text-sm mb-6 leading-relaxed flex-grow">
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2 mb-8">
-                  {project.tech.map((tech, techIndex) => (
-                    <span
-                      key={techIndex}
-                      className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-slate-300 text-xs font-medium group-hover:bg-sky-500/10 group-hover:border-sky-500/20 group-hover:text-sky-300 transition-colors"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-4 border-t border-white/5 pt-6 mt-auto">
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium"
-                  >
-                    <GitGraph size={18} />
-                  </a>
-                  {project.demo && (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium"
-                    >
-                      <ExternalLink size={18} />
-                    </a>
-                  )}
-
-
-                </div>
-              </div>
-            </div>
+              </TiltCard>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
